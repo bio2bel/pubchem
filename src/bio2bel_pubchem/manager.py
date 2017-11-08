@@ -38,7 +38,7 @@ class Manager(object):
         if compound_id in self.compounds:
             return self.compounds[compound_id]
 
-        compound = self.session.query(Compound).filter(Compound.id == compound_id).one_or_none()
+        compound = self.session.query(Compound).filter(Compound.compound_id == compound_id).one_or_none()
 
         if compound is None:
             compound = Compound(
@@ -53,7 +53,7 @@ class Manager(object):
         if substance_id in self.substances:
             return self.substances[substance_id]
 
-        substance = self.session.query(Substance).filter(Substance.id == substance_id).one_or_none()
+        substance = self.session.query(Substance).filter(Substance.substance_id == substance_id).one_or_none()
 
         if substance is None:
             substance = Substance(
