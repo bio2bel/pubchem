@@ -11,3 +11,16 @@ available:
 - ftp://ftp.ncbi.nih.gov/pubchem/Substance/Extras/README-Extras
     - Map to MeSH with ftp://ftp.ncbi.nih.gov/pubchem/Substance/Extras/SID-MeSH
     - Map to other databases with ftp://ftp.ncbi.nih.gov/pubchem/Substance/Extras/SID-Map.gz
+
+Installation
+------------
+:code:`pip3 install git+https://github.com/bio2bel/pubchem.git`
+
+Command Line Interface
+----------------------
+After installing, run with either:
+
+- :code:`python3 -m bio2bel_pubchem` or
+- :code:`bio2bel_pubchem`
+
+See ``--help`` for the list of commands, which include database population and a web interface for viewing its contents.
