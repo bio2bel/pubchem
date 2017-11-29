@@ -19,6 +19,12 @@ INSTALL_REQUIRES = [
 EXTRAS_REQUIRE = {
 }
 ENTRY_POINTS = {
+    'bio2bel': [
+        'pubchem = bio2bel_pubchem',
+    ],
+    'console_scripts': [
+        'bio2bel_pubchem = bio2bel_pubchem.cli:main',
+    ]
 }
 
 HERE = os.path.abspath(os.path.dirname(__file__))
