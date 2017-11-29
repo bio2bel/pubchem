@@ -14,12 +14,12 @@ from .manager import Manager
 
 @click.group()
 def main():
-    """ChEBI to BEL"""
-    logging.basicConfig(level=10, format="%(asctime)s - %(levelname)s - %(message)s")
+    """PubChem to BEL"""
+    logging.basicConfig(level=logging.INFO)
 
 
 @main.command()
-@click.option('-c', '--connection', help="Custom OLS base url. Defaults to {}".format(DEFAULT_CACHE_CONNECTION))
+@click.option('-c', '--connection', help="Defaults to {}".format(DEFAULT_CACHE_CONNECTION))
 def drop(connection):
     """Download and insert data"""
     m = Manager(connection=connection)
@@ -27,7 +27,7 @@ def drop(connection):
 
 
 @main.command()
-@click.option('-c', '--connection', help="Custom OLS base url. Defaults to {}".format(DEFAULT_CACHE_CONNECTION))
+@click.option('-c', '--connection', help="Defaults to {}".format(DEFAULT_CACHE_CONNECTION))
 def populate(connection):
     """Download and insert data"""
     m = Manager(connection=connection)
@@ -35,10 +35,15 @@ def populate(connection):
 
 
 @main.command()
-def web():
+@click.option('-c', '--connection', help="Defaults to {}".format(DEFAULT_CACHE_CONNECTION))
+@click.option('-v', '--debug', is_flag=True)
+@click.option('-p', '--port')
+@click.option('-h', '--host')
+def web(connection, debug, port, host):
     """Run the web app"""
-    from .web import app
-    app.run(host='0.0.0.0', port=5000)
+    from .web import create_application
+    app = create_application(connection=connection, url='/')
+    app.run(host=host, port=port, debug=debug)
 
 
 if __name__ == '__main__':

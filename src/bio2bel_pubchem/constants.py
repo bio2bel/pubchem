@@ -2,15 +2,11 @@
 
 """This module contains constants for use by all aspects of the library"""
 
-import os
+from bio2bel.utils import get_connection, get_data_dir
 
-BIO2BEL_DIR = os.environ.get('BIO2BEL_DIRECTORY', os.path.join(os.path.expanduser('~'), '.pybel', 'bio2bel'))
-DATA_DIR = os.path.join(BIO2BEL_DIR, 'pubchem')
-os.makedirs(DATA_DIR, exist_ok=True)
-
-DEFAULT_DATABASE_NAME = 'pubchem.db'
-DEFAULT_DATABASE_PATH = os.path.join(DATA_DIR, DEFAULT_DATABASE_NAME)
-DEFAULT_CACHE_CONNECTION = os.environ.get('BIO2BEL_DB', 'sqlite:///' + DEFAULT_DATABASE_PATH)
+MODULE_NAME = 'pubchem'
+DATA_DIR = get_data_dir(MODULE_NAME)
+DEFAULT_CACHE_CONNECTION = get_connection(MODULE_NAME)
 
 #: Map from compound to InChI (4.5 GB)
 CID_INCHI_URL = 'ftp://ftp.ncbi.nih.gov/pubchem/Compound/Extras/CID-InChI-Key.gz'

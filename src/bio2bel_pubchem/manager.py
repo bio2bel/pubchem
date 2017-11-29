@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-
 import logging
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from tqdm import tqdm
 
-from bio2bel_pubchem.constants import DEFAULT_CACHE_CONNECTION
+from bio2bel.utils import get_connection
+from bio2bel_pubchem.constants import MODULE_NAME
 from bio2bel_pubchem.models import Base, Compound, Substance
 from bio2bel_pubchem.parser import get_cid_inchi_df, get_cid_mesh_df
 
@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, connection=None):
-        self.connection = connection or DEFAULT_CACHE_CONNECTION
+        self.connection = get_connection(MODULE_NAME, connection=connection)
         self.engine = create_engine(self.connection)
         self.session_maker = sessionmaker(bind=self.engine, autoflush=False, expire_on_commit=False)
         self.session = self.session_maker()
