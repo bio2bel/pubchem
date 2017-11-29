@@ -30,6 +30,7 @@ class Compound(Base):
 
     compound_id = Column(Integer, nullable=False, unique=True, index=True)
     inchi = Column(Text, nullable=True)
+    inchi_key = Column(Text, nullable=True)
 
     mesh = Column(Text, doc='MeSH term')
 

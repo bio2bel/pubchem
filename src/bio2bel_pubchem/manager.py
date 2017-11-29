@@ -69,9 +69,10 @@ class Manager(object):
         df = get_cid_inchi_df(url=url)
 
         log.info('populating inchis')
-        for _, (compound_id, inchi) in tqdm(df.iterrows(), desc='inchis', total=len(df.index)):
+        for _, (compound_id, inchi, inchi_key) in tqdm(df.iterrows(), desc='inchis', total=len(df.index)):
             compound = self.get_or_create_compound(compound_id)
             compound.inchi = inchi
+            compound.inchi_key = inchi_key
             self.session.add(compound)
 
         self.session.commit()
