@@ -6,11 +6,9 @@ from urllib.request import urlretrieve
 
 import pandas as pd
 
-from ..constants import CID_INCHI_URL, DATA_DIR
+from ..constants import CID_INCHI_DATA_PATH, CID_INCHI_URL
 
 log = logging.getLogger(__name__)
-
-CID_INCHI_DATA_PATH = os.path.join(DATA_DIR, 'CID-InChI-Key.gz')
 
 
 def download_cid_inchi_data(force_download=False):
@@ -37,6 +35,7 @@ def get_cid_inchi_df(url=None, cache=True, force_download=False):
     if url is None and cache:
         url = download_cid_inchi_data(force_download=force_download)
 
+    log.info('reading %s', url or CID_INCHI_URL)
     return pd.read_csv(
         url or CID_INCHI_URL,
         sep='\t',

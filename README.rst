@@ -1,5 +1,5 @@
-PubChem to BEL
-==============
+Bio2BEL PubChem
+===============
 This repository has multiple goals, most importantly: mapping between MeSH, PubChem, and standard chemical identifiers.
 Currently, this information is scattered and incredibly difficult to access. First the following resources are
 available:

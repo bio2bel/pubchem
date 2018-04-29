@@ -1,14 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import logging
 import os
 from urllib.request import urlretrieve
 
 import pandas as pd
 
-from ..constants import CID_SID_URL, DATA_DIR
+from ..constants import CID_SID_DATA_PATH, CID_SID_URL
 
 log = logging.getLogger(__name__)
-
-CID_SID_DATA_PATH = os.path.join(DATA_DIR, 'CID-SID.gz')
 
 
 def download_cid_sid_data(force_download=False):
@@ -35,6 +35,7 @@ def get_cid_sid_df(url=None, cache=True, force_download=False):
     if url is None and cache:
         url = download_cid_sid_data(force_download=force_download)
 
+    log.info('reading %s', url or CID_SID_URL)
     return pd.read_csv(
         url or CID_SID_URL,
         sep='\t',
