@@ -26,7 +26,7 @@ def download_cid_inchi_data(force_download=False):
     return CID_INCHI_DATA_PATH
 
 
-def get_cid_inchi_df(url=None, cache=True, force_download=False):
+def get_cid_inchi_df(chunksize, url=None, cache=True, force_download=False):
     """
 
     :param Optional[str] url: The URL of the CID-InChI mapping file
@@ -39,4 +39,5 @@ def get_cid_inchi_df(url=None, cache=True, force_download=False):
     return pd.read_csv(
         url or CID_INCHI_URL,
         sep='\t',
+        chunksize=chunksize
     )

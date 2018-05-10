@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from typing import Optional
 
-from bio2bel import AbstractManager
 from tqdm import tqdm
-
+import time
+from bio2bel import AbstractManager
 from bio2bel_pubchem.constants import MODULE_NAME
 from bio2bel_pubchem.models import Base, Compound, Substance, SubstanceXref
 from bio2bel_pubchem.parser import get_cid_inchi_df, get_cid_mesh_df
@@ -28,8 +29,9 @@ class Manager(AbstractManager):
     def _base(self):
         return Base
 
-    def is_populated(self):
+    def is_populated(self) -> bool:
         """Check if the database is already populated."""
+        return 0 < self.count_compounds()
 
     def count_compounds(self) -> int:
         """Count the number of compounds in the database."""
@@ -54,11 +56,17 @@ class Manager(AbstractManager):
             substance_cross_references=self.count_substance_cross_references(),
         )
 
-    def get_or_create_compound(self, compound_id, **kwargs):
+    def get_compound_by_compound_id(self, compound_id: str) -> Optional[Compound]:
+        """
+        :param compound_id: PubChem compound identifier (CID)
+        """
+        return self.session.query(Compound).filter(Compound.compound_id == compound_id).one_or_none()
+
+    def get_or_create_compound(self, compound_id, **kwargs) -> Compound:
         if compound_id in self.compounds:
             return self.compounds[compound_id]
 
-        compound = self.session.query(Compound).filter(Compound.compound_id == compound_id).one_or_none()
+        compound = self.get_compound_by_compound_id(compound_id)
 
         if compound is None:
             compound = Compound(
@@ -69,11 +77,17 @@ class Manager(AbstractManager):
 
         return compound
 
-    def get_or_create_substance(self, substance_id, **kwargs):
+    def get_substance_by_substance_id(self, substance_id: str) -> Optional[Substance]:
+        """
+        :param substance_id: PubChem substance identifier (SID)
+        """
+        return self.session.query(Substance).filter(Substance.substance_id == substance_id).one_or_none()
+
+    def get_or_create_substance(self, substance_id, **kwargs) -> Substance:
         if substance_id in self.substances:
             return self.substances[substance_id]
 
-        substance = self.session.query(Substance).filter(Substance.substance_id == substance_id).one_or_none()
+        substance = self.get_substance_by_substance_id(substance_id)
 
         if substance is None:
             substance = Substance(
@@ -95,7 +109,10 @@ class Manager(AbstractManager):
             compound.inchi_key = inchi_key
             self.session.add(compound)
 
+        t = time.time()
+        log.info('committing models')
         self.session.commit()
+        log.info('committed models in %.2f seconds', time.time() - t)
 
     def populate_cid_mesh(self, url=None):
         log.info('downloading cid-mesh mapping')
@@ -107,7 +124,10 @@ class Manager(AbstractManager):
             compound.mesh = mesh
             self.session.add(compound)
 
+        t = time.time()
+        log.info('committing models')
         self.session.commit()
+        log.info('committed models in %.2f seconds', time.time() - t)
 
     def populate(self, cid_mesh_url=None, inchis_url=None):
         self.populate_cid_mesh(url=cid_mesh_url)
