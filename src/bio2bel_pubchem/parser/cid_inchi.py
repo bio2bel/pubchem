@@ -39,5 +39,6 @@ def get_cid_inchi_df(chunksize, url=None, cache=True, force_download=False):
     return pd.read_csv(
         url or CID_INCHI_URL,
         sep='\t',
-        chunksize=chunksize
+        chunksize=chunksize,
+        names=["compound_id", "inchi", "inchi_key"]
     )

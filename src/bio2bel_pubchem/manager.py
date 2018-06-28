@@ -7,7 +7,7 @@ from tqdm import tqdm
 import time
 from bio2bel import AbstractManager
 from bio2bel_pubchem.constants import MODULE_NAME
-from bio2bel_pubchem.models import Base, Compound, Substance, SubstanceXref
+from bio2bel_pubchem.models import Base, Compound, Substance, SubstanceXref, COMPOUND_TABLE_NAME
 from bio2bel_pubchem.parser import get_cid_inchi_df, get_cid_mesh_df
 
 log = logging.getLogger(__name__)
@@ -100,19 +100,13 @@ class Manager(AbstractManager):
 
     def populate_cid_inchis(self, url=None):
         log.info('downloading inchis')
-        df = get_cid_inchi_df(url=url)
+        df = get_cid_inchi_df(1000, url=url)
 
         log.info('populating inchis')
-        for _, (compound_id, inchi, inchi_key) in tqdm(df.iterrows(), desc='inchis', total=len(df.index)):
-            compound = self.get_or_create_compound(compound_id)
-            compound.inchi = inchi
-            compound.inchi_key = inchi_key
-            self.session.add(compound)
+        for chunk in tqdm(df, desc='cid-inchi', total=len(df.index)):
+            chunk.to_sql(COMPOUND_TABLE_NAME, self.engine, if_exists="append", index=False)
+            self.session.commit()
 
-        t = time.time()
-        log.info('committing models')
-        self.session.commit()
-        log.info('committed models in %.2f seconds', time.time() - t)
 
     def populate_cid_mesh(self, url=None):
         log.info('downloading cid-mesh mapping')
@@ -130,5 +124,6 @@ class Manager(AbstractManager):
         log.info('committed models in %.2f seconds', time.time() - t)
 
     def populate(self, cid_mesh_url=None, inchis_url=None):
-        self.populate_cid_mesh(url=cid_mesh_url)
         self.populate_cid_inchis(url=inchis_url)
+        self.populate_cid_mesh(url=cid_mesh_url)
+

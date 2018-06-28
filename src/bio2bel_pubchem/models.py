@@ -2,7 +2,7 @@
 
 """SQLAlchemy models for Bio2BEL PubChem."""
 
-from sqlalchemy import Column, ForeignKey, Integer, Table, Text
+from sqlalchemy import Column, ForeignKey, Integer, Table, Text, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 
@@ -56,7 +56,7 @@ class Compound(Base):
 
     compound_id = Column(Integer, nullable=False, unique=True, index=True)
     inchi = Column(Text, nullable=True)
-    inchi_key = Column(Text, nullable=True)
+    inchi_key = Column(String(64), nullable=True, index=True)
 
     mesh = Column(Text, doc='MeSH term')
 
