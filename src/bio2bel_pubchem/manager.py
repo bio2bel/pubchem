@@ -17,6 +17,7 @@ class Manager(AbstractManager):
     """Manager for Bio2BEL PubChem."""
 
     module_name = MODULE_NAME
+    _base = Base
     flask_admin_models = [Compound, Substance, SubstanceXref]
 
     def __init__(self, *args, **kwargs):
@@ -24,10 +25,6 @@ class Manager(AbstractManager):
 
         self.compounds = {}
         self.substances = {}
-
-    @property
-    def _base(self):
-        return Base
 
     def is_populated(self) -> bool:
         """Check if the database is already populated."""
